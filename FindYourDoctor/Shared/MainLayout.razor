@@ -1,0 +1,28 @@
+﻿@inherits LayoutComponentBase
+
+<PageTitle>FindYourDoctor</PageTitle>
+
+<MudThemeProvider @bind-IsDarkMode="_isDarkTheme" Theme="_theme"/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@(DrawerToggle)" />
+        <MudText Typo="Typo.h5" Class="ml-3">Find Your Doctor</MudText>
+        <MudSpacer />
+        <MudTooltip Text=@($"Switch to {(_isDarkTheme ? "dark" : "light")} theme")>
+            <MudToggleIconButton @bind-Toggled="@_isDarkTheme" Icon="@Icons.Material.Outlined.DarkMode" ToggledIcon="@Icons.Material.Filled.LightMode" Color="Color.Inherit" ToggledColor="Color.Inherit" />
+        </MudTooltip>
+        <LoginDisplay />
+    </MudAppBar>
+    <MudDrawer @bind-Open="@_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+        <NavMenu />
+    </MudDrawer>
+    
+    <MudMainContent>
+        <MudContainer MaxWidth="MaxWidth.Large" Style="padding-top: 24px;">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>

@@ -1,0 +1,26 @@
+@inject NavigationManager NavigationManager
+
+<AuthorizeView>
+    <Authorized>
+        <MudTooltip Text="Manage Profile">
+            <MudIconButton Color="Color.Inherit" Icon="@Icons.Material.Filled.ManageAccounts" />
+        </MudTooltip>
+        <MudTooltip Text="Log Out">
+            <MudIconButton OnClick="() => NavigationManager.NavigateTo(_logout, forceLoad: true)"  Color="Color.Inherit" Icon="@Icons.Material.Filled.Logout" />
+        </MudTooltip>
+    </Authorized>
+    <NotAuthorized>
+        <MudTooltip Text="Register">
+            <MudIconButton OnClick="() => NavigationManager.NavigateTo(_register)"  Color="Color.Inherit" Icon="@Icons.Material.Filled.AppRegistration" />
+        </MudTooltip>
+        <MudTooltip Text="Log In">
+            <MudIconButton OnClick="() => NavigationManager.NavigateTo(_login)" Color="Color.Inherit" Icon="@Icons.Material.Filled.Login" />
+        </MudTooltip>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private string _logout = "/logout";
+    private string _register = "/register";
+    private string _login = "/login";
+}

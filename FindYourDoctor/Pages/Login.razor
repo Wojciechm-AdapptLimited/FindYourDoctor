@@ -1,0 +1,23 @@
+@page "/login"
+@using Microsoft.AspNetCore.Identity
+@using FindYourDoctor.Data.Domain
+
+@inject SignInManager<User> SignInManager
+@inject UserManager<User> UserManager
+@inject NavigationManager NavigationManager
+@inject ISnackbar Snackbar
+
+<MudContainer Style="width: 100%;">
+    <MudPaper Class="pa4" Width="500px" Style="padding: 24px; margin: 30px auto auto;">
+        <MudText Typo="Typo.h5">Log In</MudText>
+        <MudForm @ref="_form" @bind-IsValid="_success">
+            <MudTextField T="string" Label="Username" @bind-Value="UserName" Required="true" />
+            <MudTextField T="string" Label="Password" @bind-Value="Password" InputType="@_passwordType"
+                          Required="true" Adornment="Adornment.End" AdornmentIcon="@_passwordIcon" OnAdornmentClick="@ShowPassword"/>
+        </MudForm>
+        <MudCheckBox T="bool" @bind-Value="_isPersistent" Color="Color.Primary">Remember me</MudCheckBox>
+        <div style="width: 100%; display: flex; justify-content: end;">
+            <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Log In</MudButton>
+        </div>
+    </MudPaper>
+</MudContainer>
