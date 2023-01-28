@@ -1,0 +1,44 @@
+@page "/manage_account"
+@using FindYourDoctor.Components
+
+<MudGrid>
+    <MudItem xs="12" sm="6" Style="margin: auto;">
+        <MudPaper Class="pa-4">
+            @if (_changeEmailShown)
+            {
+                <ChangeEmail Refresh="Refresh" />
+            }
+            else if (_changeUserNameShown)
+            {
+                <ChangeUserName Refresh="Refresh" />
+            }
+            else if (_changePasswordShown)
+            {
+                <ChangePassword Refresh="Refresh" />
+            }
+            else
+            {
+                <DisplayUserIdentity />
+            }
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(ShowChangeUserName)" Class="mx-2">Change User Name</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(ShowChangeEmail)" Class="mx-2">Change Email</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" DisableElevation="true" OnClick="@(ShowChangePassword)" Class="mx-2">Change Password</MudButton>
+        </MudPaper>
+    </MudItem>
+    <AuthorizeView Roles="Doctor">
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4 mud-height-full">
+                <EditDoctorProfile Refresh="Refresh" />
+            </MudPaper>
+        </MudItem>
+    </AuthorizeView>
+    <AuthorizeView Roles="Patient">
+        <MudItem xs="12" sm="6">
+            <MudPaper Class="pa-4 mud-height-full">
+                <EditPatientProfile Refresh="Refresh" />
+            </MudPaper>
+        </MudItem>
+        </AuthorizeView>
+</MudGrid>

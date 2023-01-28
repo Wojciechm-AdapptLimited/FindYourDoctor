@@ -1,0 +1,36 @@
+@using FindYourDoctor.Services
+@using FindYourDoctor.Data.Domain
+@using Microsoft.AspNetCore.Identity
+
+@inject DoctorPatientService DoctorPatientService
+@inject DiseaseService DiseaseService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> UserManager
+
+
+<MudText Typo="Typo.h5">Edit Profile</MudText>
+<MudForm @ref="_form" @bind-IsValid="@_success" Style="height: 100%;">
+    <div style="height: 80%; padding: 50px;">
+        <MudTextField T="string" @bind-Value="_name" Label="Name" Required="true" RequiredError="Name is required"/>
+        <MudTextField T="string" @bind-Value="_surname" Label="Surname" Required="true" RequiredError="Surname is required"/>
+        <MudTextField T="string" @bind-Value="_pwz" Label="Surname" Required="true" RequiredError="Surname is required"
+                      Validation="@(new Func<string, string?>(ValidatePwz))"/>
+        <MudSelect T="string" Label="Clinics" MultiSelection="true" @bind-Value="_valueClinics" @bind-SelectedValues="_selectedClinics"
+                   Required="true" RequiredError="Select at least one clinic">
+            @foreach (var clinic in _clinics)
+            {
+                <MudSelectItem T="string" Value="@clinic">@clinic</MudSelectItem>
+            }
+        </MudSelect>
+        <MudSelect T="string" Label="Specializations" MultiSelection="true" @bind-Value="_valueSpecializations"
+                   @bind-SelectedValues="_selectedSpecializations" Required="true" RequiredError="Select at least one specialization">
+            @foreach (var specialization in _specializations)
+            {
+                <MudSelectItem T="string" Value="@specialization">@specialization</MudSelectItem>
+            }
+        </MudSelect>
+    </div>
+    <div class="d-flex align-center justify-end" style="margin-top: 10px;">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-2" OnClick="Submit">Save</MudButton>
+    </div>
+</MudForm>

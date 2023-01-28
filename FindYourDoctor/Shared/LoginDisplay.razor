@@ -3,7 +3,7 @@
 <AuthorizeView>
     <Authorized>
         <MudTooltip Text="Manage Profile">
-            <MudIconButton Color="Color.Inherit" Icon="@Icons.Material.Filled.ManageAccounts" />
+            <MudIconButton OnClick="() => NavigationManager.NavigateTo(_manage)" Color="Color.Inherit" Icon="@Icons.Material.Filled.ManageAccounts" />
         </MudTooltip>
         <MudTooltip Text="Log Out">
             <MudIconButton OnClick="() => NavigationManager.NavigateTo(_logout, forceLoad: true)"  Color="Color.Inherit" Icon="@Icons.Material.Filled.Logout" />
@@ -23,4 +23,5 @@
     private string _logout = "/logout";
     private string _register = "/register";
     private string _login = "/login";
+    private string _manage = "/manage_account";
 }

@@ -62,6 +62,9 @@ public partial class Login
             StateHasChanged();
             return;
         }
+        
+        user.LastLoginTime = DateTime.Now.ToUniversalTime();
+        await UserManager.UpdateAsync(user);
 
         var key = Guid.NewGuid();
         CookieMiddleware.Logins[key] = new LoginInfo { UserName = UserName, Password = Password, IsPersistent = _isPersistent};

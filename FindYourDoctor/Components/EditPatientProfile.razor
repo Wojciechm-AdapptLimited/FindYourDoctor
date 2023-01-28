@@ -1,0 +1,19 @@
+@using FindYourDoctor.Services
+@using FindYourDoctor.Data.Domain
+@using Microsoft.AspNetCore.Identity
+
+@inject DoctorPatientService DoctorPatientService
+@inject DiseaseService DiseaseService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> UserManager
+
+
+<MudText Typo="Typo.h5">Edit Profile</MudText>
+<MudForm @ref="_form" @bind-IsValid="@_success" Style="height: 100%;">
+    <div style="height: 80%; padding: 50px;">
+        <MudTextField T="string" @bind-Value="_insuranceNumber" Label="Insurance Number" Required="true" RequiredError="Insurance Number is required"/>
+    </div>
+    <div class="d-flex align-center justify-end" style="margin-top: 10px;">
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-2" OnClick="Submit">Save</MudButton>
+    </div>
+</MudForm>

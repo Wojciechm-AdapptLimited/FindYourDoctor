@@ -1,0 +1,14 @@
+@using FindYourDoctor.Data.Domain
+@using Microsoft.AspNetCore.Identity
+@using System.Globalization
+
+@inject UserManager<User> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudText Typo="Typo.h5">Your Data</MudText>
+<MudList Style="height: 100%; padding: 50px;">
+    <MudListItem Icon="@Icons.Material.Filled.VerifiedUser" Text="@UserName"></MudListItem>
+    <MudListItem Icon="@Icons.Material.Filled.AlternateEmail" Text="@Email"></MudListItem>
+    <MudListItem Icon="@Icons.Material.Filled.Login" Text="@LastLoginTime.ToString(CultureInfo.CurrentCulture)"></MudListItem>
+    <MudListItem Icon="@Icons.Material.Filled.AppRegistration" Text="@RegistrationTime.ToString(CultureInfo.CurrentCulture)"></MudListItem>
+</MudList>

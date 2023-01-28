@@ -1,0 +1,21 @@
+@using System.ComponentModel.DataAnnotations
+@using FindYourDoctor.Data.Domain
+@using Microsoft.AspNetCore.Identity
+
+@inject UserManager<User> UserManager
+@inject IUserStore<User> UserStore
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<MudText Typo="Typo.h5">Change Email</MudText>
+<MudForm @ref="_form" @bind-IsValid="@_success" Style="height: 100%;">
+    <div style="height: 80%; padding: 50px;">
+        <MudTextField T="string" Label="New Email" @bind-Value="Email" Required="true"
+                      Validation="@(new Func<string, IEnumerable<string>>(ValidateEmail))"/>
+        <MudTextField T="string" Label="Confirm New Email" @bind-Value="ConfirmEmail" Required="true"
+                                  Validation="@(new Func<string, string?>(ValidateConfirmEmail))"/>
+    </div>
+    <div class="d-flex align-center justify-end" style="margin-top: 10px;">
+        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="mx-2" OnClick="Cancel">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="mx-2" OnClick="Submit">Save</MudButton>
+    </div>
+</MudForm>  

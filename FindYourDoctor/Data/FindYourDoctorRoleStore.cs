@@ -8,12 +8,14 @@ public class FindYourDoctorRoleStore : IQueryableRoleStore<Account>
 {
     private bool _isDisposed;
     private readonly FindYourDoctorDbContext _context;
-    
+    private readonly IDbContextFactory<FindYourDoctorDbContext> _contextFactory;
+
     public IQueryable<Account> Roles => _context.Set<Account>();
 
-    public FindYourDoctorRoleStore(FindYourDoctorDbContext context)
+    public FindYourDoctorRoleStore(FindYourDoctorDbContext context, IDbContextFactory<FindYourDoctorDbContext> contextFactory)
     {
         _context = context;
+        _contextFactory = contextFactory;
     }
     
     #region DML
@@ -23,9 +25,11 @@ public class FindYourDoctorRoleStore : IQueryableRoleStore<Account>
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (role == null) throw new ArgumentNullException(nameof(role));
+        
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
-        _context.Add(role);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Add(role);
+        await context.SaveChangesAsync(cancellationToken);
         return IdentityResult.Success;
     }
 
@@ -33,13 +37,15 @@ public class FindYourDoctorRoleStore : IQueryableRoleStore<Account>
     {
         cancellationToken.ThrowIfCancellationRequested();
         if (role == null) throw new ArgumentNullException(nameof(role));
+        
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
-        _context.Attach(role);
+        context.Attach(role);
         role.ConcurrencyStamp = Guid.NewGuid().ToString();
-        _context.Update(role);
+        context.Update(role);
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -54,11 +60,13 @@ public class FindYourDoctorRoleStore : IQueryableRoleStore<Account>
         ThrowIfDisposed();
         if (role == null) throw new ArgumentNullException(nameof(role));
         
-        _context.Remove(role);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        context.Remove(role);
         
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -131,23 +139,27 @@ public class FindYourDoctorRoleStore : IQueryableRoleStore<Account>
 
     #region Queries
 
-    public Task<Account?> FindByIdAsync(string roleId, CancellationToken cancellationToken)
+    public async Task<Account?> FindByIdAsync(string roleId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (roleId == null) throw new ArgumentNullException(nameof(roleId));
         if (!int.TryParse(roleId, out var idInt)) throw new ArgumentException("Not valid id", nameof(roleId));
         
-        return _context.Accounts.SingleOrDefaultAsync(x => x.Id == idInt, cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        return await context.Accounts.SingleOrDefaultAsync(x => x.Id == idInt, cancellationToken);
     }
 
-    public Task<Account?> FindByNameAsync(string roleName, CancellationToken cancellationToken)
+    public async Task<Account?> FindByNameAsync(string roleName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (roleName == null) throw new ArgumentNullException(nameof(roleName));
         
-        return _context.Accounts.SingleOrDefaultAsync(x => x.NormalizedName == roleName, cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        return await context.Accounts.SingleOrDefaultAsync(x => x.NormalizedName == roleName, cancellationToken);
     }
     
     #endregion

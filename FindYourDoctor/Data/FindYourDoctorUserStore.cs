@@ -9,12 +9,14 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
 {
     private bool _isDisposed;
     private readonly FindYourDoctorDbContext _context;
+    private readonly IDbContextFactory<FindYourDoctorDbContext> _contextFactory;
 
     public IQueryable<User> Users => _context.Set<User>();
     
-    public FindYourDoctorUserStore(FindYourDoctorDbContext context)
+    public FindYourDoctorUserStore(FindYourDoctorDbContext context, IDbContextFactory<FindYourDoctorDbContext> contextFactory)
     {
         _context = context;
+        _contextFactory = contextFactory;
     }
     
     #region DML
@@ -24,9 +26,10 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (user == null) throw new ArgumentNullException(nameof(user));
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
-        _context.Add(user);
-        await _context.SaveChangesAsync(cancellationToken);
+        context.Add(user);
+        await context.SaveChangesAsync(cancellationToken);
         return IdentityResult.Success;
     }
     
@@ -35,14 +38,16 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (user == null) throw new ArgumentNullException(nameof(user));
-
-        _context.Attach(user);
+        
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        context.Attach(user);
         user.ConcurrencyStamp = Guid.NewGuid().ToString();
-        _context.Update(user);
+        context.Update(user);
 
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -58,10 +63,12 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
         ThrowIfDisposed();
         if (user == null) throw new ArgumentNullException(nameof(user));
 
-        _context.Remove(user);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        context.Remove(user);
         try
         {
-            await _context.SaveChangesAsync(cancellationToken);
+            await context.SaveChangesAsync(cancellationToken);
         }
         catch (DbUpdateConcurrencyException)
         {
@@ -146,7 +153,9 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
         if (user == null) throw new ArgumentNullException(nameof(user));
         if (string.IsNullOrWhiteSpace(roleName)) throw new ArgumentNullException(nameof(roleName));
         
-        var account = await _context.Accounts.SingleOrDefaultAsync(r => r.Name == roleName, cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        var account = await context.Accounts.SingleOrDefaultAsync(r => r.Name == roleName, cancellationToken);
 
         if (account == null)
         {
@@ -155,7 +164,7 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
 
         user.AccountType = account.Id;
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
     
     public async Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
@@ -165,7 +174,9 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
         if (user == null) throw new ArgumentNullException(nameof(user));
         if (string.IsNullOrWhiteSpace(roleName)) throw new ArgumentNullException(nameof(roleName));
         
-        var account = await _context.Accounts.SingleOrDefaultAsync(r => r.Name == roleName, cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        var account = await context.Accounts.SingleOrDefaultAsync(r => r.Name == roleName, cancellationToken);
 
         if (account == null)
         {
@@ -174,7 +185,7 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
 
         user.AccountType = 1;
 
-        await _context.SaveChangesAsync(cancellationToken);
+        await context.SaveChangesAsync(cancellationToken);
     }
 
     #endregion
@@ -246,7 +257,10 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
         ThrowIfDisposed();
         if (user == null) throw new ArgumentNullException(nameof(user));
         
-        var name = await _context.Accounts.SingleOrDefaultAsync(x => x.Id == user.AccountType, cancellationToken: cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        var name = await context.Accounts
+            .SingleOrDefaultAsync(x => x.Id == user.AccountType, cancellationToken: cancellationToken);
 
         return new List<string> {name?.Name ?? string.Empty};
     }
@@ -255,51 +269,61 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
 
     #region Queries
 
-    public Task<User?> FindByIdAsync(string userId, CancellationToken cancellationToken)
+    public async Task<User?> FindByIdAsync(string userId, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (userId == null) throw new ArgumentNullException(nameof(userId));
         if (!int.TryParse(userId, out var idInt)) throw new ArgumentException("Not valid id", nameof(userId));
         
-        return _context.Users.FindAsync(new object?[] {idInt}, cancellationToken).AsTask();
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        return await context.Users.FindAsync(new object?[] {idInt}, cancellationToken);
     }
     
-    public Task<User?> FindByNameAsync(string userName, CancellationToken cancellationToken)
+    public async Task<User?> FindByNameAsync(string userName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (userName == null) throw new ArgumentNullException(nameof(userName));
         
-        return _context.Users.SingleOrDefaultAsync(x => x.NormalizedUserName == userName, cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        return await context.Users.SingleOrDefaultAsync(x => x.NormalizedUserName == userName, cancellationToken);
     }
 
-    public Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken)
+    public async Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (email == null) throw new ArgumentNullException(nameof(email));
         
-        return _context.Users.SingleOrDefaultAsync(x => x.NormalizedEmail == email, cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        return await context.Users.SingleOrDefaultAsync(x => x.NormalizedEmail == email, cancellationToken);
     }
 
-    public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
+    public async Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (user == null) throw new ArgumentNullException(nameof(user));
         
-        return _context.Users.AnyAsync(x => x.Id == user.Id && !string.IsNullOrEmpty(x.PasswordHash), cancellationToken);
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        return await context.Users.AnyAsync(x => x.Id == user.Id && !string.IsNullOrEmpty(x.PasswordHash), cancellationToken);
     }
 
-    public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
+    public async Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (user == null) throw new ArgumentNullException(nameof(user));
         if (string.IsNullOrWhiteSpace(roleName)) throw new ArgumentNullException(nameof(roleName));
         
-        return _context.Users
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+        
+        return await _context.Users
             .Include(x => x.AccountTypeNavigation)
             .AnyAsync(x => x.Id == user.Id && x.AccountTypeNavigation.Name == roleName, cancellationToken);
     }
@@ -309,15 +333,17 @@ public class FindYourDoctorUserStore : IUserPasswordStore<User>, IUserEmailStore
         cancellationToken.ThrowIfCancellationRequested();
         ThrowIfDisposed();
         if (string.IsNullOrWhiteSpace(roleName)) throw new ArgumentNullException(nameof(roleName));
+        
+        var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
 
-        var role = await _context.Accounts.SingleOrDefaultAsync(x => x.Name == roleName, cancellationToken);
+        var role = await context.Accounts.SingleOrDefaultAsync(x => x.Name == roleName, cancellationToken);
 
         if (role == null)
         {
             return new List<User>();
         }
 
-        return await _context.Accounts
+        return await context.Accounts
             .Include(x => x.Users)
             .Where(x => x.Name == roleName)
             .SelectMany(x => x.Users)

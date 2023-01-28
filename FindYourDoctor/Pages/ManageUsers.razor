@@ -1,0 +1,36 @@
+@page "/manage-users"
+
+@using Microsoft.AspNetCore.Identity
+@using FindYourDoctor.Data.Domain
+@using System.Globalization
+
+@inject UserManager<User> UserManager
+
+<MudTable Items="_users" Hover="true" FixedHeader="true" Filter="new Func<UserTableObject, bool>(FilterUsers)" SortLabel="Sort by" Height="700px">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Users</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="Search" Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserTableObject,object>(x => x.Id)" Enabled="true">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserTableObject,object>(x => x.UserName)">Username</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserTableObject,object>(x => x.Email)">Email</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserTableObject,object>(x => x.Account)">Account Type</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserTableObject,object>(x => x.LastLoginDate)">Last Login Time</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<UserTableObject,object>(x => x.RegisterDate)">Registration Time</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Id</MudTd>
+        <MudTd>@context.UserName</MudTd>
+        <MudTd>@context.Email</MudTd>
+        <MudTd>@context.Account</MudTd>
+        <MudTd>@context.LastLoginDate.ToString(CultureInfo.CurrentCulture)</MudTd>
+        <MudTd>@context.RegisterDate.ToString(CultureInfo.CurrentCulture)</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+

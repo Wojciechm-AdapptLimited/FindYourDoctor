@@ -79,14 +79,14 @@ public partial class FindYourDoctorDbContext : DbContext
                 .UsingEntity<Dictionary<string, object>>(
                     "ClinicDoctor",
                     r => r.HasOne<Doctor>().WithMany()
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("doctor_id")
                         .HasConstraintName("clinic_doctor_doctor_id_fkey"),
                     l => l.HasOne<Clinic>().WithMany()
-                        .HasForeignKey("ClinicId")
+                        .HasForeignKey("clinic_id")
                         .HasConstraintName("clinic_doctor_clinic_id_fkey"),
                     j =>
                     {
-                        j.HasKey("ClinicId", "DoctorId").HasName("clinic_doctor_pkey");
+                        j.HasKey("clinic_id", "doctor_id").HasName("clinic_doctor_pkey");
                         j.ToTable("clinic_doctor");
                     });
         });
@@ -149,14 +149,14 @@ public partial class FindYourDoctorDbContext : DbContext
                 .UsingEntity<Dictionary<string, object>>(
                     "DoctorSpecialization",
                     r => r.HasOne<Specialization>().WithMany()
-                        .HasForeignKey("SpecializationId")
+                        .HasForeignKey("specialization_id")
                         .HasConstraintName("doctor_specialization_specialization_id_fkey"),
                     l => l.HasOne<Doctor>().WithMany()
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("doctor_id")
                         .HasConstraintName("doctor_specialization_doctor_id_fkey"),
                     j =>
                     {
-                        j.HasKey("DoctorId", "SpecializationId").HasName("doctor_specialization_pkey");
+                        j.HasKey("doctor_id", "specialization_id").HasName("doctor_specialization_pkey");
                         j.ToTable("doctor_specialization");
                     });
         });

@@ -1,5 +1,10 @@
 ﻿<MudNavMenu>
-    <MudNavLink Href="/" Match="NavLinkMatch.All">Home</MudNavLink>
-    <MudNavLink Href="/counter" Match="NavLinkMatch.Prefix">Counter</MudNavLink>
-    <MudNavLink Href="/fetchdata"  Match="NavLinkMatch.Prefix">Fetch Data</MudNavLink>
+    <MudNavLink Icon="@Icons.Material.Filled.Home" Href="/">Home</MudNavLink>
+    <MudNavLink Icon="@Icons.Material.Filled.MedicalServices" Href="/counter">Doctors</MudNavLink>
+    <AuthorizeView Roles="Admin">
+        <MudDivider />
+        <MudNavGroup Icon="@Icons.Material.Filled.Settings" Title="Manage Data" Expanded="true">
+            <MudNavLink Icon="@Icons.Material.Filled.People" Href="/manage-users">Manage Users</MudNavLink>
+        </MudNavGroup>
+    </AuthorizeView>
 </MudNavMenu>

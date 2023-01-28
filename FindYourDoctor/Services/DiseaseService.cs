@@ -4,11 +4,19 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FindYourDoctor.Services;
 
-public class DiseaseSearchService
+public class DiseaseService
 {
     private readonly FindYourDoctorDbContext _context;
+    
+    public IQueryable<Specialization> Specializations => _context.Set<Specialization>();
 
-    public DiseaseSearchService(FindYourDoctorDbContext context)
+    public IQueryable<Disease> Diseases => _context.Set<Disease>();
+
+    public IQueryable<Symptom> Symptoms => _context.Set<Symptom>();
+    
+    public IQueryable<SymptomWeight> SymptomWeights => _context.Set<SymptomWeight>();
+
+    public DiseaseService(FindYourDoctorDbContext context)
     {
         _context = context;
     }

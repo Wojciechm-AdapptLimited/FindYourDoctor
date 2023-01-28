@@ -17,7 +17,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<FindYourDoctorDbContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddDbContextFactory<FindYourDoctorDbContext>(options =>
-    options.UseNpgsql(connectionString), ServiceLifetime.Transient);
+    options.UseNpgsql(connectionString), ServiceLifetime.Scoped);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 #endregion
@@ -61,7 +61,8 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddMudServices();
 
-builder.Services.AddSingleton<WeatherForecastService>();    
+builder.Services.AddScoped<DoctorPatientService>();    
+builder.Services.AddScoped<DiseaseService>();    
 #endregion
 
 var app = builder.Build();
