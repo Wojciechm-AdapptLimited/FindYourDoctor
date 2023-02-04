@@ -8,6 +8,8 @@ public partial class EditPatientProfile
 {
     private bool _success;
     private MudForm? _form;
+    private string _name = string.Empty;
+    private string _surname = string.Empty;
     private string _insuranceNumber = string.Empty;
     private Patient? _patient;
 
@@ -30,14 +32,13 @@ public partial class EditPatientProfile
         if (_patient == null)
             return;
 
-        _insuranceNumber = _patient.InsuranceNumber;
+        _name = _patient.Name ?? string.Empty;
+        _surname = _patient.Surname ?? string.Empty;
+        _insuranceNumber = _patient.InsuranceNumber ?? string.Empty;
     }
     
     private async void Submit()
     {
-        if (string.IsNullOrWhiteSpace(_insuranceNumber))
-            return;
-        
         var authenticationState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = await UserManager.GetUserAsync(authenticationState.User);
 
@@ -59,9 +60,10 @@ public partial class EditPatientProfile
             
             DoctorPatientService.InsertPatient(_patient);
         }
-
-        _patient.InsuranceNumber = _insuranceNumber;
-        DoctorPatientService.UpdatePatient(_patient);
+        else
+        {
+            DoctorPatientService.UpdatePatient(_patient.UserId, _name, _surname, _insuranceNumber);
+        }
 
         _ = Refresh.InvokeAsync();
     }

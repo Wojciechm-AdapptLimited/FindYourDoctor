@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.EntityFrameworkCore;
-using FindYourDoctor.Areas.Identity;
 using FindYourDoctor.Data;
 using FindYourDoctor.Data.Domain;
 using FindYourDoctor.Services;
@@ -24,9 +23,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 #region Authentication
 
-// builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
-//     .AddRoles<Account>()
-//     .AddEntityFrameworkStores<FindYourDoctorDbContext>();
+
 builder.Services.AddIdentity<User, Account>();
 builder.Services.AddScoped<IUserStore<User>, FindYourDoctorUserStore>();
 builder.Services.AddScoped<IRoleStore<Account>, FindYourDoctorRoleStore>();

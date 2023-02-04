@@ -195,6 +195,8 @@ public partial class FindYourDoctorDbContext : DbContext
                 .ValueGeneratedNever()
                 .HasColumnName("user_id");
             entity.Property(e => e.InsuranceNumber).HasColumnName("insurance_number");
+            entity.Property(e => e.Name).HasColumnName("name");
+            entity.Property(e => e.Surname).HasColumnName("surname");
 
             entity.HasOne(d => d.User).WithOne(p => p.Patient)
                 .HasForeignKey<Patient>(d => d.UserId)
@@ -204,14 +206,14 @@ public partial class FindYourDoctorDbContext : DbContext
                 .UsingEntity<Dictionary<string, object>>(
                     "FavouriteDoctor",
                     r => r.HasOne<Doctor>().WithMany()
-                        .HasForeignKey("DoctorId")
+                        .HasForeignKey("doctor_id")
                         .HasConstraintName("favourite_doctors_doctor_id_fkey"),
                     l => l.HasOne<Patient>().WithMany()
-                        .HasForeignKey("PatientId")
+                        .HasForeignKey("patient_id")
                         .HasConstraintName("favourite_doctors_patient_id_fkey"),
                     j =>
                     {
-                        j.HasKey("PatientId", "DoctorId").HasName("favourite_doctors_pkey");
+                        j.HasKey("patient_id", "doctor_id").HasName("favourite_doctors_pkey");
                         j.ToTable("favourite_doctors");
                     });
         });

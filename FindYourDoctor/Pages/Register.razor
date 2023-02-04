@@ -2,10 +2,12 @@
 
 @using Microsoft.AspNetCore.Identity
 @using FindYourDoctor.Data.Domain
+@using FindYourDoctor.Services
 
 @inject NavigationManager NavigationManager
 @inject UserManager<User> UserManager
 @inject IUserStore<User> UserStore
+@inject DoctorPatientService DoctorPatientService
 
 <MudContainer Style="width: 100%;">
     <MudPaper Class="pa4" Width="500px" Style="padding: 24px; margin: 30px auto auto;">

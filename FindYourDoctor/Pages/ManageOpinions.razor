@@ -1,0 +1,45 @@
+@page "/manage-opinions"
+
+@using FindYourDoctor.Services
+
+@inject DoctorPatientService DoctorPatientService
+@inject IDialogService DialogService
+
+<MudTable Items="_opinions" Hover="true" FixedHeader="true" Filter="new Func<OpinionTableObject, bool>(FilterOpinions)" SortLabel="Sort by" Height="700px">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Opinions</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="Search" Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+        <MudSelect Style="margin-left: 5px;" T="string" Label="Search By" @bind-Value="_searchType" Class="mt-0">
+            <MudSelectItem Value="@("Patient Username")" T="string"></MudSelectItem>
+            <MudSelectItem Value="@("Doctor Name")" T="string"></MudSelectItem>
+        </MudSelect>
+    </ToolBarContent>
+    <ColGroup>
+        <col/>
+        <col/>
+        <col style="width: 15%"/>
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<OpinionTableObject,object>(x => x.PatientUserName)" Enabled="true">Patient Username</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<OpinionTableObject,object>(x => x.DoctorName)">Doctor Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<OpinionTableObject,object>(x => x.IssueDate)">Issue Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<OpinionTableObject,object>(x => x.Stars)">Stars</MudTableSortLabel></MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.PatientUserName</MudTd>
+        <MudTd>@context.DoctorName</MudTd>
+        <MudTd>@context.IssueDate</MudTd>
+        <MudTd><MudRating ReadOnly="true" SelectedValue="@context.Stars" /></MudTd>
+        <MudTd>@context.Description</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteOpinion(context.PatientId, context.DoctorsId, context.IssueDate)"/>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

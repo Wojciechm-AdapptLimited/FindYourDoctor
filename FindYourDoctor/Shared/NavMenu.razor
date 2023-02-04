@@ -4,7 +4,15 @@
     <AuthorizeView Roles="Admin">
         <MudDivider />
         <MudNavGroup Icon="@Icons.Material.Filled.Settings" Title="Manage Data" Expanded="true">
-            <MudNavLink Icon="@Icons.Material.Filled.People" Href="/manage-users">Manage Users</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.AccountBox" Href="/manage-accounts">Account Types</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.People" Href="/manage-users">Users</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.PersonalInjury" Href="/manage-patients">Patients</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.MedicalInformation" Href="/manage-doctors">Doctors</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Message" Href="/manage-opinions">Opinions</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.LocalHospital" Href="/manage-clinics">Clinics</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.School" Href="/manage-specializations">Specializations</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Thermostat" Href="/manage-diseases">Diseases</MudNavLink>
+            <MudNavLink Icon="@Icons.Material.Filled.Warning" Href="/manage-symptoms">Symptoms</MudNavLink>
         </MudNavGroup>
     </AuthorizeView>
 </MudNavMenu>

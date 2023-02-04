@@ -1,0 +1,26 @@
+@using FindYourDoctor.Services
+
+@inject DoctorPatientService DoctorPatientService
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_success" Style="padding: 24px">
+            <MudTextField T="string" @bind-Value="_name" Label="Name" Required="true" RequiredError="Clinic's name is required"
+                          Validation="@(new Func<string, IEnumerable<string>>(ValidateName))"/>
+            <MudSelect T="string" @bind-Value="_voivodeship" Label="Voivodeship" Required="true" 
+                       RequiredError="Selecting clinic's voivodeship is required">
+                @foreach (var voivodeship in _voivodeships)
+                {
+                    <MudSelectItem T="string" Value="voivodeship">@voivodeship</MudSelectItem>
+                }
+            </MudSelect>
+            <MudTextField T="string" @bind-Value="_fullAddress" Label="Full Address" Required="true" 
+                          RequiredError="Clinic's address is required"/>
+            <MudTextField T="string" @bind-Value="_phoneNumber" Label="Phone Number" InputType="InputType.Telephone"/>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>

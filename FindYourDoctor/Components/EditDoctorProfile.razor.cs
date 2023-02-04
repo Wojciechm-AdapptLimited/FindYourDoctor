@@ -46,6 +46,7 @@ public partial class EditDoctorProfile
 
         _name = _doctor.Name;
         _surname = _doctor.Surname;
+        _pwz = _doctor.PwzNumber;
         _selectedClinics = _doctor.Clinics.Select(x => x.Name).ToHashSet();
         _selectedSpecializations = _doctor.Specializations.Select(x => x.Name).ToHashSet();
     }
@@ -96,15 +97,10 @@ public partial class EditDoctorProfile
             _doctor.Specializations.AddRange(specializations);
             DoctorPatientService.InsertDoctor(_doctor);
         }
-
-        _doctor.Name = _name;
-        _doctor.Surname = _surname;
-        _doctor.PwzNumber = _pwz;
-        _doctor.Clinics.Clear();
-        _doctor.Clinics.AddRange(clinics);
-        _doctor.Specializations.Clear();
-        _doctor.Specializations.AddRange(specializations);
-        DoctorPatientService.UpdateDoctor(_doctor);
+        else
+        {
+            DoctorPatientService.UpdateDoctor(_doctor.UserId, _name, _surname, _pwz, clinics.ToList(), specializations.ToList());
+        }
 
         _ = Refresh.InvokeAsync();
     }

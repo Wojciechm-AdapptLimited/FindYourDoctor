@@ -6,6 +6,7 @@ public partial class ManageUsers
 {
     private List<UserTableObject> _users = new();
     private string? _searchString;
+    private string _searchType = "Username";
 
     private class UserTableObject
     {
@@ -36,6 +37,13 @@ public partial class ManageUsers
     {
         if (string.IsNullOrWhiteSpace(_searchString))
             return true;
-        return user.UserName.Contains(_searchString) || user.Email.Contains(_searchString);
+        
+        return _searchType switch
+        {
+            "Username" when user.UserName.Contains(_searchString, StringComparison.CurrentCultureIgnoreCase) => true,
+            "Email" when user.Email.Contains(_searchString, StringComparison.CurrentCultureIgnoreCase) => true,
+            "Account Type" when user.Account.Contains(_searchString, StringComparison.CurrentCultureIgnoreCase) => true,
+            _ => false
+        };
     }
 }

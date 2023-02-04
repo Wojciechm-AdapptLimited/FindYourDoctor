@@ -170,6 +170,18 @@ public partial class Register
 
         if (!result.Succeeded)
             return;
+
+        if (AccountType == "Patient")
+        {
+            var userId = int.Parse(await UserManager.GetUserIdAsync(user));
+
+            var patient = new Patient
+            {
+                UserId = userId
+            };
+            
+            DoctorPatientService.InsertPatient(patient);
+        }
         
         var key = Guid.NewGuid();
         CookieMiddleware.Logins[key] = new LoginInfo { UserName = UserName, Password = Password };

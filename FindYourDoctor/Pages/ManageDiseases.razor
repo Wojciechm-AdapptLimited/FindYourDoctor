@@ -1,0 +1,67 @@
+@page "/manage-diseases"
+
+@using FindYourDoctor.Services
+
+@inject DiseaseService DiseaseService
+@inject IDialogService DialogService
+
+<MudTable Items="_diseases" Hover="true" FixedHeader="true" Filter="new Func<DiseaseTableObject, bool>(FilterDiseases)" SortLabel="Sort by" Height="700px">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Diseases</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddDisease"/>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="Search" Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+        <MudSelect Style="margin-left: 5px;" T="string" Label="Search By" @bind-Value="_searchType" Class="mt-0">
+            <MudSelectItem Value="@("Name")" T="string"></MudSelectItem>
+            <MudSelectItem Value="@("Icd")" T="string"></MudSelectItem>
+            <MudSelectItem Value="@("Specialization Name")" T="string"></MudSelectItem>
+        </MudSelect>
+    </ToolBarContent>
+    <ColGroup>
+        <col/>
+        <col/>
+        <col/>
+        <col style="width: 15%"/>
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<DiseaseTableObject,object>(x => x.Icd)" Enabled="true">Icd</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DiseaseTableObject,object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DiseaseTableObject,object>(x => x.SpecializationName)">Specialization Name</MudTableSortLabel></MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Icd</MudTd>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.SpecializationName</MudTd>
+        <MudTd>
+            <MudTooltip Text="Show Symptom Weights">
+                <MudToggleIconButton @bind-Toggled="@context.ShowSymptoms" Icon="@Icons.Material.Filled.Visibility" ToggledIcon="@Icons.Material.Filled.VisibilityOff"/>
+            </MudTooltip>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => EditDisease(context.Icd)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteDisease(context.Icd)"/>
+        </MudTd>
+    </RowTemplate>
+    <ChildRowContent>
+        @if (context.ShowSymptoms)
+        {
+            <MudTr>
+                <td colspan="6">
+                    <MudTable Items="@context.SymptomWeights.OrderByDescending(x => x.Weight)" Context="SymptomWeightContext" Hover="true">
+                        <HeaderContent>
+                            <MudTh>Symptom</MudTh>
+                            <MudTh>Weight</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@SymptomWeightContext.SymptomName</MudTd>
+                            <MudTd>@SymptomWeightContext.Weight</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </td>
+            </MudTr>
+        }
+    </ChildRowContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

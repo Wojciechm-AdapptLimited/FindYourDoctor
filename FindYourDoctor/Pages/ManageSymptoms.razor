@@ -1,0 +1,37 @@
+@page "/manage-symptoms"
+
+@using FindYourDoctor.Services
+
+@inject DiseaseService DiseaseService
+@inject IDialogService DialogService
+
+<MudTable Items="_symptoms" Hover="true" FixedHeader="true" Filter="new Func<SymptomTableObject, bool>(FilterSymptoms)" SortLabel="Sort by" Height="700px">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Symptoms</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddSymptom"/>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="Search" Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+    </ToolBarContent>
+    <ColGroup>
+        <col/>
+        <col/>
+        <col style="width: 15%"/>
+    </ColGroup>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<SymptomTableObject,object>(x => x.Id)" Enabled="true">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<SymptomTableObject,object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Id</MudTd>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => EditSymptom(context.Id)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteSymptom(context.Id)"/>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>

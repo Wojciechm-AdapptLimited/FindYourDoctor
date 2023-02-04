@@ -1,0 +1,66 @@
+@using FindYourDoctor.Services
+
+@inject DiseaseService DiseaseService
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_success" Style="padding: 24px; max-height: 300px; overflow-y: scroll">
+            <MudTextField T="string" @bind-Value="DiseaseIcd" Label="ICD" ReadOnly="_icdReadOnly" Required="true" RequiredError="Disease's ICD is required"
+                          Validation="@(new Func<string, IEnumerable<string>>(ValidateIcd))"/>
+            <MudTextField T="string" @bind-Value="_name" Label="Name" Required="true" RequiredError="Disease's name is required"
+                          Validation="@(new Func<string, IEnumerable<string>>(ValidateName))"/>
+            <MudSelect T="string" @bind-Value="_specialization" Label="Specialization" Required="true"
+                       RequiredError="Selecting disease's specialization is required">
+                @foreach (var specialization in _specializations)
+                {
+                    <MudSelectItem T="string" Value="specialization">@specialization</MudSelectItem>
+                }
+            </MudSelect>
+            <MudDivider Style="margin: 20px 0"/>
+            <MudTable Items="@_symptomWeights.OrderByDescending(x => x.Weight)" FixedHeader="@true" CustomHeader="@true" Hover="@true" CanCancelEdit="@true" Filter="new Func<SymptomWeightTableObject, bool>(FilterSymptomWeights)"
+                @bind-SelectedItem="_selectedSymptom" CommitEditTooltip="Commit Edit" CancelEditTooltip="Cancel Edit" RowEditPreview="BackupSymptom" RowEditCancel="ResetSymptom" RowEditCommit="UpdateSymptom">
+                <ToolBarContent>
+                    <MudText Typo="Typo.h6">Symptom Weights</MudText>
+                    <MudSpacer />
+                    <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium"/>
+                </ToolBarContent>
+                <ColGroup>
+                    <col style="width:50%" />
+                    <col />
+                    <col />
+                </ColGroup>
+                <HeaderContent>
+                    <MudTHeadRow>
+                        <MudTh>Symptom Name</MudTh>
+                        <MudTh>Weight</MudTh>
+                        <MudTh>Action</MudTh>
+                    </MudTHeadRow>
+                    <MudTHeadRow>
+                        <MudTh>
+                            <MudSelect @bind-Value="_symptomName" AnchorOrigin="Origin.BottomCenter">
+                                @foreach(var symptom in _symptoms.OrderBy(x => x)) {
+                                    <MudSelectItem Value="symptom">@symptom</MudSelectItem>
+                                }
+                            </MudSelect>
+                        </MudTh>
+                        <MudTh><MudNumericField HideSpinButtons="@true" @bind-Value="_symptomWeight" Variant="Variant.Text" Min="1" Max="5"/></MudTh>
+                        <MudTh><MudIconButton Icon="@Icons.Material.Filled.AddCircleOutline" OnClick="AddSymptom"/></MudTh>
+                    </MudTHeadRow>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>@context.SymptomName</MudTd>
+                    <MudTd>@context.Weight</MudTd>
+                    <MudTd><MudIconButton Icon="@Icons.Material.Filled.RemoveCircleOutline" OnClick="() => RemoveSymptom(context)" /></MudTd>
+                </RowTemplate>
+                <RowEditingTemplate>
+                    <MudTd>@context.SymptomName</MudTd>
+                    <MudTh><MudNumericField HideSpinButtons="@true" @bind-Value="context.Weight" Variant="Variant.Text" Min="1" Max="5"/></MudTh>
+                </RowEditingTemplate>
+            </MudTable>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>

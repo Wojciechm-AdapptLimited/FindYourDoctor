@@ -1,0 +1,87 @@
+@page "/manage-doctors"
+
+@using FindYourDoctor.Services
+
+@inject DoctorPatientService DoctorPatientService
+
+<MudTable Items="_doctors" Hover="true" FixedHeader="true" Filter="new Func<DoctorTableObject, bool>(FilterDoctors)" SortLabel="Sort by" Height="700px">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Doctors</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="Search" Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+        <MudSelect Style="margin-left: 5px;" T="string" Label="Search By" @bind-Value="_searchType" Class="mt-0">
+            <MudSelectItem Value="@("Username")" T="string"></MudSelectItem>
+            <MudSelectItem Value="@("Name")" T="string"></MudSelectItem>
+            <MudSelectItem Value="@("Surname")" T="string"></MudSelectItem>
+            <MudSelectItem Value="@("PWZ Number")" T="string"></MudSelectItem>
+        </MudSelect>
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<DoctorTableObject,object>(x => x.Id)" Enabled="true">Id</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DoctorTableObject,object>(x => x.UserName)">Username</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DoctorTableObject,object>(x => x.Name)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DoctorTableObject,object>(x => x.Surname)">Surname</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DoctorTableObject,object>(x => x.PwzNumber)">PWZ Number</MudTableSortLabel></MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Id</MudTd>
+        <MudTd>@context.UserName</MudTd>
+        <MudTd>@context.Name</MudTd>
+        <MudTd>@context.Surname</MudTd>
+        <MudTd>@context.PwzNumber</MudTd>
+        <MudTd>
+            <MudTooltip Text="Show Specializations">
+                <MudToggleIconButton @bind-Toggled="@context.ShowSpecializations" Icon="@Icons.Material.Filled.Visibility" ToggledIcon="@Icons.Material.Filled.VisibilityOff"/>
+            </MudTooltip>
+            <MudTooltip Text="Show Clinics">
+                <MudToggleIconButton @bind-Toggled="@context.ShowClinics" Icon="@Icons.Material.Filled.Visibility" ToggledIcon="@Icons.Material.Filled.VisibilityOff"/>
+            </MudTooltip>
+        </MudTd>
+    </RowTemplate>
+    <ChildRowContent>
+        @if (context.ShowSpecializations)
+        {
+            <MudTr>
+                <td colspan="6">
+                    <MudTable Items="@context.Specializations" Context="SpecializationContext" Hover="true">
+                        <HeaderContent>
+                            <MudTh>Id</MudTh>
+                            <MudTh>Name</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@SpecializationContext.Id</MudTd>
+                            <MudTd>@SpecializationContext.Name</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </td>
+            </MudTr>
+        }
+        else if (context.ShowClinics)
+        {
+            <MudTr>
+                <td colspan="6">
+                    <MudTable Items="@context.Clinics" Context="ClinicContext" Hover="true">
+                        <HeaderContent>
+                            <MudTh>Id</MudTh>
+                            <MudTh>Name</MudTh>
+                            <MudTh>Voivodeship</MudTh>
+                            <MudTh>Full Address</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd>@ClinicContext.Id</MudTd>
+                            <MudTd>@ClinicContext.Name</MudTd>
+                            <MudTd>@ClinicContext.Voivodeship</MudTd>
+                            <MudTd>@ClinicContext.FullAddress</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </td>
+            </MudTr>
+        }
+    </ChildRowContent>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+

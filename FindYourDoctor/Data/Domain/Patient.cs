@@ -3,8 +3,12 @@
 public class Patient
 {
     public int UserId { get; set; }
+    
+    public string? Name { get; set; }
+    
+    public string? Surname { get; set; }
 
-    public string InsuranceNumber { get; set; } = null!;
+    public string? InsuranceNumber { get; set; }
 
     public virtual ICollection<DiseaseHistory> DiseaseHistories { get; set; } = new List<DiseaseHistory>();
 
