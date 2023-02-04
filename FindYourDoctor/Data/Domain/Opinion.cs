@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FindYourDoctor.Data.Domain;
 
-namespace FindYourDoctor.Data.Domain;
-
-public partial class Opinion
+public class Opinion
 {
     public DateTime IssueDate { get; set; }
 

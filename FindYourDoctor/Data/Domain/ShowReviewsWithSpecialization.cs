@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FindYourDoctor.Data.Domain;
 
-namespace FindYourDoctor.Data.Domain;
-
-public partial class ShowReviewsWithSpecialization
+public class ShowReviewsWithSpecialization
 {
     public int? UserId { get; set; }
 

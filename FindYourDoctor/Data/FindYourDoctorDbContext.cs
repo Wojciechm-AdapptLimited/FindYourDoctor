@@ -74,21 +74,6 @@ public partial class FindYourDoctorDbContext : DbContext
             entity.Property(e => e.Name).HasColumnName("name");
             entity.Property(e => e.PhoneNumber).HasColumnName("phone_number");
             entity.Property(e => e.Voivodeship).HasColumnName("voivodeship");
-
-            entity.HasMany(d => d.Doctors).WithMany(p => p.Clinics)
-                .UsingEntity<Dictionary<string, object>>(
-                    "ClinicDoctor",
-                    r => r.HasOne<Doctor>().WithMany()
-                        .HasForeignKey("doctor_id")
-                        .HasConstraintName("clinic_doctor_doctor_id_fkey"),
-                    l => l.HasOne<Clinic>().WithMany()
-                        .HasForeignKey("clinic_id")
-                        .HasConstraintName("clinic_doctor_clinic_id_fkey"),
-                    j =>
-                    {
-                        j.HasKey("clinic_id", "doctor_id").HasName("clinic_doctor_pkey");
-                        j.ToTable("clinic_doctor");
-                    });
         });
 
         modelBuilder.Entity<Disease>(entity =>
@@ -117,7 +102,7 @@ public partial class FindYourDoctorDbContext : DbContext
             entity.Property(e => e.PatientId).HasColumnName("patient_id");
             entity.Property(e => e.DiseaseIcd).HasColumnName("disease_icd");
 
-            entity.HasOne(d => d.DiseaseIcdNavigation).WithMany(p => p.DiseaseHistories)
+            entity.HasOne(d => d.Disease).WithMany(p => p.DiseaseHistories)
                 .HasForeignKey(d => d.DiseaseIcd)
                 .HasConstraintName("disease_history_disease_icd_fkey");
 
@@ -158,6 +143,22 @@ public partial class FindYourDoctorDbContext : DbContext
                     {
                         j.HasKey("doctor_id", "specialization_id").HasName("doctor_specialization_pkey");
                         j.ToTable("doctor_specialization");
+                    }
+                );
+
+            entity.HasMany(d => d.Clinics).WithMany(p => p.Doctors)
+                .UsingEntity<Dictionary<string, object>>(
+                    "ClinicDoctor",
+                    r => r.HasOne<Clinic>().WithMany()
+                        .HasForeignKey("clinic_id")
+                        .HasConstraintName("clinic_doctor_clinic_id_fkey"),
+                    l => l.HasOne<Doctor>().WithMany()
+                        .HasForeignKey("doctor_id")
+                        .HasConstraintName("clinic_doctor_doctor_id_fkey"),
+                    j =>
+                    {
+                        j.HasKey("clinic_id", "doctor_id").HasName("clinic_doctor_pkey");
+                        j.ToTable("clinic_doctor");
                     });
         });
 
@@ -199,7 +200,7 @@ public partial class FindYourDoctorDbContext : DbContext
                 .HasForeignKey<Patient>(d => d.UserId)
                 .HasConstraintName("patient_user_id_fkey");
 
-            entity.HasMany(d => d.Doctors).WithMany(p => p.Patients)
+            entity.HasMany(d => d.FavouriteDoctors).WithMany(p => p.Patients)
                 .UsingEntity<Dictionary<string, object>>(
                     "FavouriteDoctor",
                     r => r.HasOne<Doctor>().WithMany()
@@ -278,7 +279,7 @@ public partial class FindYourDoctorDbContext : DbContext
             entity.Property(e => e.SymptomId).HasColumnName("symptom_id");
             entity.Property(e => e.Weight).HasColumnName("weight");
 
-            entity.HasOne(d => d.DiseaseIcdNavigation).WithMany(p => p.SymptomWeights)
+            entity.HasOne(d => d.Disease).WithMany(p => p.SymptomWeights)
                 .HasForeignKey(d => d.DiseaseIcd)
                 .HasConstraintName("symptom_weight_disease_icd_fkey");
 

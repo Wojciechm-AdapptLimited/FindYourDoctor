@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FindYourDoctor.Data.Domain;
 
-namespace FindYourDoctor.Data.Domain;
-
-public partial class Doctor
+public class Doctor
 {
     public int UserId { get; set; }
 
@@ -13,13 +10,13 @@ public partial class Doctor
 
     public string Surname { get; set; } = null!;
 
-    public virtual ICollection<Opinion> Opinions { get; } = new List<Opinion>();
+    public virtual IEnumerable<Opinion> Opinions { get; } = new List<Opinion>();
 
     public virtual User User { get; set; } = null!;
 
-    public virtual ICollection<Clinic> Clinics { get; } = new List<Clinic>();
+    public virtual ICollection<Clinic> Clinics { get; set; } = new List<Clinic>();
 
-    public virtual ICollection<Patient> Patients { get; } = new List<Patient>();
+    public virtual IEnumerable<Patient> Patients { get; } = new List<Patient>();
 
-    public virtual ICollection<Specialization> Specializations { get; } = new List<Specialization>();
+    public virtual ICollection<Specialization> Specializations { get; set; } = new List<Specialization>();
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FindYourDoctor.Data.Domain;
 
-namespace FindYourDoctor.Data.Domain;
-
-public partial class Clinic
+public class Clinic
 {
     public int ClinicId { get; set; }
 
@@ -15,5 +12,5 @@ public partial class Clinic
 
     public string? PhoneNumber { get; set; }
 
-    public virtual ICollection<Doctor> Doctors { get; } = new List<Doctor>();
+    public virtual IEnumerable<Doctor> Doctors { get; } = new List<Doctor>();
 }

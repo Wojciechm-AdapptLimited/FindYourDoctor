@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FindYourDoctor.Data.Domain;
 
-namespace FindYourDoctor.Data.Domain;
-
-public partial class ShowReview
+public class ShowReview
 {
     public int? UserId { get; set; }
 

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FindYourDoctor.Data.Domain;
 
-namespace FindYourDoctor.Data.Domain;
-
-public partial class SymptomWeight
+public class SymptomWeight
 {
     public string DiseaseIcd { get; set; } = null!;
 
@@ -11,7 +8,7 @@ public partial class SymptomWeight
 
     public int Weight { get; set; }
 
-    public virtual Disease DiseaseIcdNavigation { get; set; } = null!;
+    public virtual Disease Disease { get; set; } = null!;
 
     public virtual Symptom Symptom { get; set; } = null!;
 }

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿namespace FindYourDoctor.Data.Domain;
 
-namespace FindYourDoctor.Data.Domain;
-
-public partial class DiseaseHistory
+public class DiseaseHistory
 {
     public DateOnly IllnessDate { get; set; }
 
@@ -11,7 +8,7 @@ public partial class DiseaseHistory
 
     public string DiseaseIcd { get; set; } = null!;
 
-    public virtual Disease DiseaseIcdNavigation { get; set; } = null!;
+    public virtual Disease Disease { get; set; } = null!;
 
     public virtual Patient Patient { get; set; } = null!;
 }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity;
-
-namespace FindYourDoctor.Data.Domain;
+﻿namespace FindYourDoctor.Data.Domain;
 
 public class User
 {
