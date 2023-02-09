@@ -58,7 +58,7 @@ public partial class EditDoctorProfile
             return "PWZ Number is required";
         }
 
-        return DoctorPatientService.Doctors.Any(x => x.PwzNumber == pwz)
+        return DoctorPatientService.Doctors.Any(x => x.PwzNumber == pwz) && pwz != _pwz
             ? "PWZ already registered in the system"
             : null;
     }

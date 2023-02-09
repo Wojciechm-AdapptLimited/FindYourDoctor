@@ -1,13 +1,51 @@
 ﻿@page "/"
-@page "/loginfailed"
+@page "/login_failed"
+@using FindYourDoctor.Services
 
 @inject ISnackbar Snackbar
 @inject NavigationManager NavigationManager
+@inject DiseaseService DiseaseService
+@inject DoctorPatientService DoctorPatientService
 
 <PageTitle>Find Your Doctor</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudText Typo="Typo.h2">Medical Diagnosis Tool</MudText>
 
-Welcome to your new app.
+<MudContainer Style="margin-top: 70px;">
+    <MudText Typo="Typo.body2">Enter symptoms you have and let our system find your doctor for you!</MudText>
+</MudContainer>
+<MudContainer>
+    <MudAutocomplete T="string" Label="Enter Symptoms..." @bind-Value="SelectedSymptom" SearchFunc="SearchForSymptom" @bind-Text="_text"
+                     ResetValueOnEmptyText="true" CoerceText="true" AdornmentIcon="@Icons.Material.Filled.Search"/>
 
-<MudAutocomplete T="string"/>
+    <MudContainer Style="margin-top: 20px;" >
+        @foreach (var symptom in _selectedSymptoms)
+        {
+            <MudChip Color="Color.Primary" OnClose="CloseChip" Text="@symptom"/>
+        }
+    </MudContainer>
+</MudContainer>
+<MudGrid Style="margin-top: 40px;">
+    @foreach (var doctor in _recommendedDoctors)
+    {
+        <MudItem>
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderAvatar>
+                        <MudAvatar Color="Color.Secondary">@doctor.Surname[0]</MudAvatar>
+                    </CardHeaderAvatar>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.body1">@doctor.Name @doctor.Surname</MudText>
+                    </CardHeaderContent>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudRating ReadOnly="true" SelectedValue="GetDoctorsRating(doctor.UserId)" />
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton OnClick="() => ViewDoctorProfile(doctor.UserId)">See Profile</MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    }
+</MudGrid>
+

@@ -3,10 +3,8 @@
 @using Microsoft.AspNetCore.Identity
 
 @inject DoctorPatientService DoctorPatientService
-@inject DiseaseService DiseaseService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<User> UserManager
-
 
 <MudText Typo="Typo.h5">Edit Profile</MudText>
 <MudForm @ref="_form" @bind-IsValid="@_success" Style="height: 100%;">

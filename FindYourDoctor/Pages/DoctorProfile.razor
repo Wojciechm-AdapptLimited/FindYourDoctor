@@ -1,0 +1,74 @@
+@page "/doctor-profile"
+
+@using System.Globalization
+@using FindYourDoctor.Data.Domain
+@using FindYourDoctor.Services
+@using Microsoft.AspNetCore.Identity
+
+@inject NavigationManager NavigationManager
+@inject DoctorPatientService DoctorPatientService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> UserManager
+@inject IDialogService DialogService
+
+<MudGrid>
+    <MudItem xs="12" sm="6">
+        <MudPaper Class="pa-4">
+            <MudText Typo="Typo.h5">@_name</MudText>
+            <MudList Style="height: 100%; padding: 50px;">
+                <MudListItem Icon="@Icons.Material.Filled.VerifiedUser" Text="@($"PWZ Number: {_pwz}")" />
+                <MudListItem Icon="@Icons.Material.Filled.StarRate"><MudRating ReadOnly="true" SelectedValue="_stars"/></MudListItem>
+                <MudListItem Icon="@Icons.Material.Filled.Login" Text="@($"Last Seen: {_lastLoginTime.ToString(CultureInfo.CurrentCulture)}")" />
+            </MudList>
+        </MudPaper>
+        <MudPaper Class="pa-4 mt-4">
+            <AuthorizeView Roles="Patient">
+                <Authorized>
+                    <MudButton Variant="_isFavourite ? Variant.Filled : Variant.Outlined" Color="Color.Primary" DisableElevation="true" OnClick="AddOrRemoveToFavourite" Class="mx-2">@ButtonText</MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Primary" DisableElevation="true" OnClick="AddOpinion" Class="mx-2">Leave Review</MudButton>
+                </Authorized>
+                <NotAuthorized>
+                    <MudText Color="Color.Primary">Log In or Register as a Patient to leave reviews</MudText>
+                </NotAuthorized>
+            </AuthorizeView>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="6">
+        <MudPaper Class="pa-4 mud-height-full">
+            <MudTreeView T="string">
+                <MudTreeViewItem Value='"Specializations"' Icon="@Icons.Material.Filled.School" ExpandedIcon="@Icons.Material.Filled.ArrowRight">
+                    @foreach (var specialization in _specializations)
+                    {
+                        <MudTreeViewItem Value="specialization" />
+                    }
+                </MudTreeViewItem>
+                <MudTreeViewItem Value='"Clinics"' Icon="@Icons.Material.Filled.LocalHospital" ExpandedIcon="@Icons.Material.Filled.ArrowRight">
+                    @foreach (var clinic in _clinics)
+                    {
+                        <MudTreeViewItem Value="clinic" />
+                    }
+                </MudTreeViewItem>
+            </MudTreeView>
+        </MudPaper>
+    </MudItem>
+    <MudItem xs="12" sm="12" md="12">
+        <MudGrid>
+            @foreach (var opinion in _opinions)
+            {
+                <MudItem xs="6">
+                    <MudCard>
+                        <MudCardHeader>
+                            <CardHeaderContent>
+                                <MudText Typo="Typo.body1">@opinion.PatientUserName wrote on @opinion.IssueDate.ToString(CultureInfo.CurrentCulture):</MudText>
+                            </CardHeaderContent>
+                        </MudCardHeader>
+                        <MudCardContent>
+                            <MudRating ReadOnly="true" SelectedValue="@opinion.Stars" />
+                            <MudText>@opinion.Description</MudText>
+                        </MudCardContent>
+                    </MudCard>
+                </MudItem>
+            }
+        </MudGrid>
+    </MudItem>
+</MudGrid>

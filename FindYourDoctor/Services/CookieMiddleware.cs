@@ -34,7 +34,7 @@ public class CookieMiddleware
                 return;
             }
             
-            context.Response.Redirect("/loginfailed");
+            context.Response.Redirect("/login_failed");
             return;
         }
         

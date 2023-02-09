@@ -1,0 +1,22 @@
+@using FindYourDoctor.Services
+@using Microsoft.AspNetCore.Identity
+@using FindYourDoctor.Data.Domain
+
+@inject DoctorPatientService DoctorPatientService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> UserManager
+
+<MudDialog>
+    <DialogContent>
+        <MudForm @ref="_form" @bind-IsValid="_success" Style="padding: 24px">
+            <MudRating @bind-SelectedValue="_stars" HoveredValueChanged="HandleHoveredValueChanged" MaxValue="5"/>
+            <MudText Typo="Typo.subtitle2" Class="deep-purple-text mt-2">@LabelText</MudText>
+            <MudTextField T="string" Label="Enter your review" Variant="Variant.Outlined" Clearable="true" Lines="3" 
+                          @bind-Value="@_description" Counter="100" MaxLength="100"/>
+        </MudForm>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="Submit">Submit</MudButton>
+    </DialogActions>
+</MudDialog>

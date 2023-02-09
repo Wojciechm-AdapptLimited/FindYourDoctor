@@ -40,5 +40,18 @@
                 <EditPatientProfile Refresh="Refresh" />
             </MudPaper>
         </MudItem>
-        </AuthorizeView>
+        <MudItem xs="12" sm="12" md="12">
+            <MudTabs Elevation="4" Rounded="true" Color="@Color.Primary">
+                <MudTabPanel Text="Disease History">
+                    <ShowDiseaseHistory />
+                </MudTabPanel>
+                <MudTabPanel Text="Favourite Doctors">
+                    <ShowFavouriteDoctors />
+                </MudTabPanel>
+                <MudTabPanel Text="Opinions">
+                    <ShowOpinions />
+                </MudTabPanel>
+            </MudTabs>
+        </MudItem>
+    </AuthorizeView>
 </MudGrid>

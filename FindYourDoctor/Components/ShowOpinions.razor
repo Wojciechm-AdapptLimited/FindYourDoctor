@@ -1,0 +1,38 @@
+@using FindYourDoctor.Services
+@using Microsoft.AspNetCore.Identity
+@using FindYourDoctor.Data.Domain
+@using System.Globalization
+
+@inject DoctorPatientService DoctorPatientService
+@inject IDialogService DialogService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> UserManager
+
+<MudTable Items="_opinions" Hover="true" Filter="new Func<OpinionTableObject, bool>(FilterOpinions)" FixedHeader="true" SortLabel="SortBy" Height="500px">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Opinions</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="Search" Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortBy="new Func<OpinionTableObject, object>(x => x.DoctorName)">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<OpinionTableObject, object>(x => x.IssueDate)">Date</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<OpinionTableObject, object>(x => x.Stars)">Date</MudTableSortLabel></MudTh>
+        <MudTh>Description</MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.DoctorName</MudTd>
+        <MudTd>@context.IssueDate.ToString(CultureInfo.CurrentCulture)</MudTd>
+        <MudTd><MudRating ReadOnly="true" SelectedValue="@context.Stars" /></MudTd>
+        <MudTd>@context.Description</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Edit" OnClick="() => EditOpinion(context.DoctorId, context.IssueDate)"/>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteOpinion(context.DoctorId, context.IssueDate)"/>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>

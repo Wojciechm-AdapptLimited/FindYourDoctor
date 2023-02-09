@@ -1,5 +1,6 @@
 using FindYourDoctor.Data;
 using FindYourDoctor.Data.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace FindYourDoctor.Services;
 
@@ -14,6 +15,10 @@ public class DoctorPatientService
     public IQueryable<Clinic> Clinics => _context.Set<Clinic>();
 
     public IQueryable<Opinion> Opinions => _context.Set<Opinion>();
+
+    public IQueryable<ShowReview> Reviews => _context.Set<ShowReview>();
+
+    public IQueryable<DiseaseHistory> DiseaseHistory => _context.Set<DiseaseHistory>();
 
     public DoctorPatientService(FindYourDoctorDbContext context)
     {
@@ -90,6 +95,25 @@ public class DoctorPatientService
         _context.Remove(clinic);
         _context.SaveChanges();
     }
+
+    public void InsertOpinion(Opinion opinion)
+    {
+        _context.Add(opinion);
+        _context.SaveChanges();
+    }
+    
+    public void UpdateOpinion(int patientId, int doctorId, DateTime issueDate, int stars, string? description)
+    {
+        var opinion = Opinions.SingleOrDefault(x =>
+            x.PatientId == patientId && x.DoctorId == doctorId && x.IssueDate == issueDate);
+
+        if (opinion == null) return;
+
+        opinion.Stars = stars;
+        opinion.Description = description;
+        
+        _context.SaveChanges();
+    }
     
     public void RemoveOpinion(int patientId, int doctorId, DateTime issueDate)
     {
@@ -99,6 +123,47 @@ public class DoctorPatientService
         if (opinion == null) return;
 
         _context.Remove(opinion);
+        _context.SaveChanges();
+    }
+    
+    public void InsertDiseaseHistory(DiseaseHistory diseaseHistory)
+    {
+        _context.Add(diseaseHistory);
+        _context.SaveChanges();
+    }
+    
+    public void RemoveDiseaseHistory(int patientId, string diseaseIcd, DateOnly illnessDate)
+    {
+        var diseaseHistory = DiseaseHistory.SingleOrDefault(x =>
+            x.PatientId == patientId && x.DiseaseIcd == diseaseIcd && x.IllnessDate == illnessDate);
+
+        if (diseaseHistory == null) return;
+
+        _context.Remove(diseaseHistory);
+        _context.SaveChanges();
+    }
+
+    public void AddFavouriteDoctor(int patientId, int doctorId)
+    {
+        var patient = Patients.Include(x => x.FavouriteDoctors).SingleOrDefault(x => x.UserId == patientId);
+
+        var doctor = Doctors.SingleOrDefault(x => x.UserId == doctorId);
+        
+        if (doctor == null) return;
+        
+        patient?.FavouriteDoctors.Add(doctor);
+        _context.SaveChanges();
+    }
+
+    public void RemoveFavouriteDoctor(int patientId, int doctorId)
+    {
+        var patient = Patients.Include(x => x.FavouriteDoctors).SingleOrDefault(x => x.UserId == patientId);
+
+        var doctor = patient?.FavouriteDoctors.SingleOrDefault(x => x.UserId == doctorId);
+        
+        if (doctor == null) return;
+
+        patient?.FavouriteDoctors.Remove(doctor);
         _context.SaveChanges();
     }
 }

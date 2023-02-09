@@ -1,0 +1,36 @@
+@using FindYourDoctor.Services
+@using Microsoft.AspNetCore.Identity
+@using FindYourDoctor.Data.Domain
+@using System.Globalization
+
+@inject DoctorPatientService DoctorPatientService
+@inject IDialogService DialogService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<User> UserManager
+
+<MudTable Items="_diseaseHistory" Hover="true" Filter="new Func<DiseaseHistoryTableObject, bool>(FilterDiseaseHistory)" FixedHeader="true" SortLabel="SortBy" Height="500px">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Disease History</MudText>
+        <MudIconButton Icon="@Icons.Material.Filled.Add" OnClick="AddDiseaseHistory"/>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Immediate="true" Placeholder="Search" Adornment="Adornment.Start" 
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0" />
+    </ToolBarContent>
+    <HeaderContent>
+        <MudTh>ICD</MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DiseaseHistoryTableObject, object>(x => x.DiseaseName)">Disease Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortBy="new Func<DiseaseHistoryTableObject, object>(x => x.IllnessTime)">Date</MudTableSortLabel></MudTh>
+        <MudTh>Actions</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Icd</MudTd>
+        <MudTd>@context.DiseaseName</MudTd>
+        <MudTd>@context.IllnessTime.ToString(CultureInfo.CurrentCulture)</MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="() => DeleteDiseaseHistory(context.Icd, context.IllnessTime)"/>
+        </MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager/>
+    </PagerContent>
+</MudTable>
